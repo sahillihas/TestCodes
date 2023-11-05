@@ -119,4 +119,85 @@ int main()
 {
 	solve();
 }
+
+//----
+Questions:
+Fractional knapsack
+Scrambled string
+Water level
+
+
+
+scramble string :- 
+int dp[55][55][55][55];
+int solve(int i1,int j1,int i2,int j2,const string A, const string B)
+{
+    if(i1 == j1)
+    {
+        return i2==j2 && A[i1]==B[i2];
+    }
+
+    if(dp[i1][j1][i2][j2]!=-1)
+    return dp[i1][j1][i2][j2];
+
+    int ans=0;
+
+    for(int k=i1;k<j1;k++)
+    {
+        ans|=solve(i1,k,i2,i2+(k-i1),A,B)&solve(k+1,j1,i2+(k-i1)+1,j2,A,B);//No swap;
+        ans|=solve(i1,k,j2-(k-i1),j2,A,B)&solve(k+1,j1,i2,j2-(k-i1)-1,A,B);//Swap;
+
+    }
+
+    return dp[i1][j1][i2][j2]=ans;
+}
+int Solution::isScramble(const string A, const string B) {
+    memset(dp,-1,sizeof(dp));
+
+    int n=A.size();
+
+    return solve(0,n-1,0,n-1,A,B);
+}
+
+
+Solution 2 (question konsa he vo dekh lena idk)
+#include <bits/stdc++.h>
+using namespace std;
+int minimumDivisions(vector<int>& A, int B) {
+    int n = A.size();
+    priority_queue<int>pq;
+    for(auto it:A){
+        pq.push(it);
+    }
+    int count = 0;
+    int i = 0;
+    while(B>0 && !pq.empty()){
+        if(pq.top()<=B){
+            B-=pq.top();
+            pq.pop();
+        }
+        else {
+            count++;
+            int val = pq.top()/2;
+            pq.pop();
+            pq.push(val);
+        }
+    }
+    return B==0 ? count:-1;
+}
+
+int main() {
+    int n, B;
+    B = 10;
+    vector<int>A =  {1,32,1};
+    int minDivisions = minimumDivisions(A, B);
+    if (minDivisions == INT_MAX) {
+        cout<<"-1";
+    } else {
+        std::cout << "Minimum number of divisions needed: " << minDivisions << std::endl;
+    }
+
+    return 0;
+}
+
     
