@@ -43,4 +43,80 @@ def dp(i,mask):
 n=len(A)
 
 print(dp(0,(0,)*n))
+
+# Mask Updates
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long int ll;
+
+bool helper(ll P, vector<vector<ll>> &A, ll S)
+{
+	ll k = A[0].size();
+	vector<ll> minMaskCost((1 << k), 1e18);
+	ll n = A.size();
+
+	for (ll i = 0; i < n; i++)
+	{
+		for (ll mask = 0; mask < (1 << k); mask++)
+		{
+			ll cost = 0;
+			for (ll j = 0; j < k; j++)
+			{
+				if ((mask >> j) & 1)
+				{
+					cost += (P + A[i][j] - 1) / (A[i][j]);
+				}
+			}
+			minMaskCost[mask] = min(minMaskCost[mask], cost);
+		}
+	}
+	ll minCost = INT64_MAX;
+	for (ll mask = 0; mask < (1 << k); mask++)
+	{
+		ll invertmask = 0;
+		for (ll j = 0; j < k; j++)
+		{
+			if (!((mask >> j) & 1))
+			{
+				invertmask += (1 << j);
+			}
+		}
+		minCost = min(minCost, minMaskCost[mask] + minMaskCost[invertmask]);
+	}
+
+	if (minCost <= S)return 1;
+	else return 0;
+}
+int Solution(vector<vector<ll>> A, ll S)
+{
+	ll l = 0;
+	ll r = 1e18;
+	ll maxSize = -1;
+	while (r - l >= 0)
+	{
+		ll mid = (l + r) / 2;
+		if (helper(mid, A, S))
+		{
+			l = mid + 1;
+			maxSize = mid;
+		}
+		else {
+			r = mid - 1;
+		}
+	}
+
+	return maxSize;
+}
+void solve()
+{
+	vector<vector<ll>> A = {{9, 4, 1}, {2, 5, 10}, {6, 8, 3}};
+	ll S = 10;
+	// vector<vector<ll>> A = {{1, 4}, {4, 1}};
+	// ll S = 10;
+	cout << Solution(A, S) << endl;
+}
+int main()
+{
+	solve();
+}
     
