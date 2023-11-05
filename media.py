@@ -43,3 +43,4 @@ def dp(i,mask):
 n=len(A)
 
 print(dp(0,(0,)*n))
+    
